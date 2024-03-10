@@ -1,0 +1,77 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+@using TodoList
+
+<PageTitle>Todo App</PageTitle>
+
+
+<h1 class="badge bg-primary position-relative">
+    Task
+    <span class="position-absolute top-0 start-110 translate-middle badge rounded-pill bg-danger">
+        @todos.Count(todo => todo.IsDone)
+    
+    </span>
+</h1>
+
+<ul style="list-style-type: none;">
+    @foreach (var todo in todos)
+    {
+        <li>
+            <label>
+                <input type="checkbox" @bind="todo.IsDone" />
+                @todo.Title
+            </label>
+            <button class="btn btn-outline-danger btn-sm"
+                @onclick="() => RemoveTodo(todo)"
+             >
+                <i class="bi bi-trash" style="font-size: 0.7rem;"></i>
+            </button>
+        </li>
+        <br />
+    }
+</ul>
+<div class="d-grid gap-2">
+<input placeholder="Task Name" @bind="newTodo" class="form-control"/>
+<button @onclick="AddTodo" class="btn btn-outline-primary">Add Task</button>
+</div>
+@code {
+  
+    //private List<TodoItem> todos = new(); //forma 1
+
+    // forma 2 con Inicialización de la lista de tareas
+    private List<TodoItem> todos = new List<TodoItem>()
+    {
+        new TodoItem { Title = "Editar video YT ", IsDone = false },
+        new TodoItem { Title = "Aprender Laravel", IsDone = false },
+        new TodoItem { Title = "Codificar con Js", IsDone = true }
+    };
+
+    //Otra forma de inicializar las tareas hardcodeadas
+    @* protected override void OnInitialized()
+    {
+        
+        todos = new List<TodoItem>
+        {
+            new TodoItem { Title = "Editar video YT ", IsDone = false },
+            new TodoItem { Title = "Aprender Laravel", IsDone = false },
+            new TodoItem { Title = "Codificar con Js", IsDone = true }
+        };
+    } *@
+
+    // Para CREATE
+    private string? newTodo;
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Title = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    private void RemoveTodo(TodoItem todo)
+    {
+        todos.Remove(todo);
+    }
+}
